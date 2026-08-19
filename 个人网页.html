@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>佐罗斯的个人主页</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --bg: linear-gradient(120deg, #e0f7ff 0%, #d9edff 100%);
+      --card: rgba(255, 255, 255, 0.9); /* 卡片背景更通透，突出气泡边框 */
+      --card-border: rgba(255, 255, 255, 1); /* 纯白色边框，强化气泡感 */
+      --text: #222222;
+      --gray: #555555;
+      --accent: #ff7a00;
+      --radius: 24px;
+      --shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+      --gap: 24px; 
+      /* 优化气泡内阴影：更柔和的白色内发光，模拟气泡通透感 */
+      --bubble-inset: inset 0 3px 6px rgba(255, 255, 255, 0.9), inset 0 -2px 4px rgba(220, 240, 255, 0.5);
+    }
+
+    /* 隐藏右侧滚动条 */
+    html {
+      overflow-y: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    html::-webkit-scrollbar {
+      display: none;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 50px var(--gap);
+      max-width: 1200px;
+      margin: 0 auto;
+      min-height: 100vh;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    /* 动态渐变名称效果 */
+    .dynamic-gradient {
+      background: linear-gradient(45deg, 
+        #ff006e, #ff7a00, #ffbe0b, #fb5607, 
+        #ff006e, #ff7a00, #ffbe0b, #fb5607);
+      background-size: 400% 400%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-weight: 700;
+      animation: gradientShift 56s linear infinite;
+    }
+    
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 400% 50%; }
+    }
+
+    /* 顶部头像+介绍区域 */
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      margin-bottom: var(--gap);
+    }
+
+    /* 头像容器 */
+    .avatar-container {
+      position: relative;
+    }
+
+    /* 头像气泡 */
+    .avatar {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      background: url('https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), var(--bubble-inset);
+      border: 6px solid #ffffff;
+      transition: transform 0.3s ease;
+    }
+    .avatar:hover {
+      transform: scale(1.05);
+    }
+
+    /* 头像右下角徽章 */
+    .avatar-badge {
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background-color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      border: 2px solid #e0f7ff;
+    }
+
+    .intro h1 {
+      font-size: 32px;
+      margin-bottom: 6px;
+      user-select: none;
+    }
+    /* 气泡标签 - 保持原样 */
+    .intro .tag-group {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .intro .tag {
+      font-size: 16px;
+      font-weight: 600;
+      color: white;
+      padding: 6px 18px;
+      border-radius: 30px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12), var(--bubble-inset);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      border: 2px solid rgba(255, 255, 255, 0.5);
+      z-index: 1;
+      user-select: none;
+    }
+    /* 标签渐变优化 */
+    .intro .tag:nth-child(1) { background: linear-gradient(135deg, #5fc3e4 0%, #4facfe 100%); }
+    .intro .tag:nth-child(2) { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+    .intro .tag:nth-child(3) { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+    .intro .tag:nth-child(4) { background: linear-gradient(135deg, #f3a6f5 0%, #f5576c 100%); }
+    .intro .tag:nth-child(5) { background: linear-gradient(135deg, #d90ce7 0%, #cc339c 100%); }
+    .intro .tag:nth-child(6) { background: linear-gradient(135deg, #ff7a00 0%, #ffbe0b 100%); }
+    .intro .tag:nth-child(7) { background: linear-gradient(135deg, #c73163 0%, #ed4dba 100%); }
+    .intro .tag:nth-child(8) { background: linear-gradient(135deg, #eadc39 0%, #e9ef32 100%); }
+    /* 标签悬浮 */
+    .intro .tag:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15), var(--bubble-inset);
+      border-color: rgba(255, 255, 255, 0.8);
+    }
+    .intro .tag:active {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 12px rgba(0, 0, 0, 0.1), var(--bubble-inset);
+    }
+    .intro .tag::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        to bottom right,
+        rgba(255, 255, 255, 0.5) 0%,
+        rgba(255, 255, 255, 0) 70%
+      );
+      transform: rotate(30deg);
+      animation: shine 3.5s infinite linear;
+    }
+    @keyframes shine {
+      0% { transform: translateX(-100%) rotate(30deg); }
+      100% { transform: translateX(100%) rotate(30deg); }
+    }
+    .intro .tag span {
+      position: relative;
+      z-index: 2;
+      display: inline-block;
+      transition: transform 0.3s ease;
+    }
+    .intro .tag:hover span {
+      transform: scale(1.15);
+    }
+
+    /* 卡片通用样式：核心优化 - 白色气泡边框 */
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      border: 6px solid var(--card-border);
+      box-shadow: 
+        var(--shadow),
+        var(--bubble-inset);
+      padding: 24px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      min-height: fit-content;
+    }
+    /* 卡片悬浮 */
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 
+        0 10px 25px rgba(0, 0, 0, 0.12),
+        var(--bubble-inset);
+    }
+    .card h2 {
+      font-size: 20px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #444;
+      font-weight: 600;
+    }
+    /* 标题图标颜色 */
+    .card h2::before {
+      content: '';
+      width: 4px;
+      height: 20px;
+      border-radius: 2px;
+    }
+    .left-column .card:nth-child(1) h2::before { background: #ff7a00; }
+    .left-column .card:nth-child(2) h2::before { background: #4facfe; }
+    .right-column .card:nth-child(1) h2::before { background: #43e97b; }
+    .right-column .card:nth-child(2) h2::before { background: #f093fb; }
+    .right-column .card:nth-child(3) h2::before { background: #fa709a; }
+
+    /* 鸽子计划列表 */
+    .todo-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .todo-list li {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 16px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      transition: background 0.2s ease;
+    }
+    .todo-list li:hover {
+      background: rgba(255, 255, 255, 0.95);
+    }
+    .todo-list input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      border-radius: 6px;
+      border: 2px solid #ddd;
+      cursor: pointer;
+      accent-color: var(--accent);
+    }
+    .todo-list li span {
+      font-size: 15px;
+      color: var(--text);
+    }
+
+    /* 技术栈网格 */
+    .stacks {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+      gap: 14px;
+      font-size: 15px;
+      margin-top: 16px;
+    }
+    .stacks li {
+      list-style: none;
+      background: rgba(246, 246, 246, 0.8);
+      padding: 12px 8px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05), var(--bubble-inset);
+      transition: all 0.2s ease;
+      cursor: default;
+    }
+    .stacks li:hover {
+      background: rgba(255, 255, 255, 0.95);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08), var(--bubble-inset);
+    }
+
+    /* 下方两栏布局容器：左右列高度一致 */
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: var(--gap);
+      margin-top: var(--gap);
+      align-items: stretch;
+      min-height: calc(100vh - 280px);
+    }
+
+    /* 左右列容器：卡片动态间距分配 */
+    .left-column, .right-column {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    /* 时光卡片 */
+    .time-list {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .time-list li {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .time-list span {
+      font-size: 15px;
+      color: var(--gray);
+      font-weight: 500;
+    }
+    .progress-bar {
+      height: 8px;
+      background: rgba(230, 230, 230, 0.7);
+      border-radius: 4px;
+      overflow: hidden;
+      box-shadow: var(--bubble-inset);
+    }
+    .progress-bar div {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.5s ease;
+      box-shadow: 0 0 8px rgba(255, 122, 0, 0.3);
+    }
+
+    /* 引用卡片：适配打字机效果 */
+    .quote-card {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 120px; /* 保证卡片高度稳定 */
+    }
+    .quote-display {
+      font-style: italic;
+      text-align: center;
+      color: var(--gray);
+      font-size: 18px;
+      line-height: 1.8;
+      max-width: 80%;
+      position: relative;
+    }
+    /* 打字机光标样式 */
+    .typing-cursor {
+      animation: blink 0.8s infinite;
+      color: var(--gray);
+      font-weight: 300;
+      margin-left: 2px;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    /* 链接按钮 - 保持原样 */
+    .links-card {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      padding-top: 8px;
+    }
+    .link-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 22px;
+      border-radius: 16px;
+      color: var(--text);
+      font-size: 15px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08), var(--bubble-inset);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+    }
+    .link-btn:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12), var(--bubble-inset);
+      color: var(--text);
+    }
+    /* 按钮背景色 */
+    .link-btn:nth-child(1) { background-color: rgba(255, 153, 187, 0.9); }
+    .link-btn:nth-child(2) { background-color: rgba(34, 34, 34, 0.9); color: white; }
+    .link-btn:nth-child(3) { background-color: rgba(0, 161, 214, 0.9); color: white; }
+    .link-btn:nth-child(4) { background-color: rgba(255, 184, 34, 0.9); }
+    .link-btn:nth-child(5) { background-color: rgba(255, 42, 42, 0.9); color: white; }
+
+    /* 响应式 */
+    @media (max-width: 640px) {
+      .header {
+        flex-direction: column;
+        text-align: center;
+      }
+      .avatar {
+        width: 90px;
+        height: 90px;
+      }
+      .avatar-badge {
+        width: 26px;
+        height: 26px;
+        font-size: 14px;
+      }
+      .intro h1 {
+        font-size: 26px;
+      }
+      .intro .tag {
+        font-size: 14px;
+        padding: 5px 14px;
+        border-radius: 24px;
+      }
+      .intro .tag-group {
+        gap: 10px;
+        justify-content: center;
+      }
+      .layout {
+        grid-template-columns: 1fr;
+        min-height: auto;
+      }
+      .card {
+        padding: 20px 16px;
+      }
+      .stacks {
+        grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+        gap: 12px;
+      }
+      .quote-display {
+        max-width: 100%;
+        font-size: 16px;
+      }
+      .link-btn {
+        padding: 8px 18px;
+        font-size: 14px;
+      }
+      body {
+        padding: 32px var(--gap);
+      }
+      .left-column, .right-column {
+        gap: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 顶部头像+介绍区域 -->
+  <header class="header">
+    <div class="avatar-container">
+      <div class="avatar"></div>
+      <div class="avatar-badge">😊</div>
+    </div>
+    <div class="intro">
+      <h1>Hi, I'm <span class="dynamic-gradient">|@佐罗斯|</span></h1>
+      <div class="tag-group">
+        <span class="tag"><span><b>♂</b></span></span>
+        <span class="tag"><span><b>19</b></span></span>
+        <span class="tag"><span><b>广东省</b></span></span>
+        <span class="tag"><span><b>金牛座</b></span></span>
+        <span class="tag"><span><b>学生</b></span></span>
+        <span class="tag"><span><b>编程</b></span></span>
+        <span class="tag"><span><b>娄底职业技术学院</b></span></span>
+        <span class="tag"><span><b>3363529805@qq.com</b></span></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- 下方两栏布局 -->
+  <div class="layout">
+    <!-- 左侧列：2个卡片 -->
+    <div class="left-column">
+      <section class="card">
+        <h2>我的一些鸽子计划🕊️</h2>
+        <ul class="todo-list">
+          <li><input type="checkbox"> ☕学会 Java</li>
+          <li><input type="checkbox"> 🗣️学会粤语</li>
+          <li><input type="checkbox"> 🌍学会英语</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <h2>时光⏳</h2>
+        <ul class="time-list">
+          <li>
+            <span id="today-text">☀️今天已经过去了 00:00:00 / 24:00:00</span>
+            <div class="progress-bar">
+              <div id="today-progress" style="width: 0%; background: #ff7a00;"></div>
+            </div>
+          </li>
+          <li>
+            <span id="week-text">📅本周已经过去了 0 / 7 天</span>
+            <div class="progress-bar">
+              <div id="week-progress" style="width: 0%; background: #4facfe;"></div>
+            </div>
+          </li>
+          <li>
+            <span id="month-text">🌙本月已经过去了 0 / 30 天</span>
+            <div class="progress-bar">
+              <div id="month-progress" style="width: 0%; background: #43e97b;"></div>
+            </div>
+          </li>
+          <li>
+            <span id="year-text">🌟今年已经过去了 0 / 365 天</span>
+            <div class="progress-bar">
+              <div id="year-progress" style="width: 0%; background: #f093fb;"></div>
+            </div>
+          </li>
+        </ul>
+      </section>
+    </div>
+    
+    <!-- 右侧列：3个卡片 -->
+    <div class="right-column">
+      <section class="card">
+        <p>你好鸭，很高兴认识你🍋~</p>
+        <p>我叫 佐罗斯</p>
+        <p>这是我的个人网页</p>
+        <p>takeown /F "C:\Program Files\Java\jdk-21\bin" /R /D Y  # 获取所有权</p>
+        
+        <h2 style="margin-top: 24px;">🧰我的一些技术栈😊</h2>
+        <ul class="stacks">
+          <li>JavaScript</li>
+          <li>HTML5</li>
+          <li>CSS3</li>
+          <li>React</li>
+          <li>Node.js</li>
+          <li>Express</li>
+        </ul>
+      </section>
+
+      <!-- 改造后的随机名言卡片（带打字机效果） -->
+      <section class="card quote-card">
+        <div class="quote-display" id="quote-display"></div>
+      </section>
+
+      <section class="card">
+        <h2>我的链接🔗</h2>
+        <div class="links-card">
+          <a href="#" class="link-btn">
+            <i class="fas fa-blog"></i>
+            博客
+          </a>
+          <a href="#" class="link-btn">
+            <i class="fab fa-github"></i>
+            Github
+          </a>
+          <a href="#" class="link-btn">
+            <i class="fab fa-bilibili"></i>
+            哔哩哔哩
+          </a>
+          <a href="#" class="link-btn">
+            <i class="fas fa-envelope"></i>
+            邮箱
+          </a>
+          <a href="#" class="link-btn">
+            <i class="fas fa-music"></i>
+            网易云
+          </a>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    // 更新时光卡片进度的函数
+    function updateTimeProgress() {
+      const now = new Date();
+      
+      // 今天进度（精确到秒）
+      const hours = now.getHours();
+      const minutes = now.getMinutes();
+      const seconds = now.getSeconds();
+      
+      const totalSecondsToday = hours * 3600 + minutes * 60 + seconds;
+      const totalSecondsInDay = 24 * 3600;
+      const todayProgress = (totalSecondsToday / totalSecondsInDay) * 100;
+      
+      const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      
+      document.getElementById('today-progress').style.width = `${todayProgress}%`;
+      document.getElementById('today-text').textContent = `☀️今天已经过去了 ${formattedTime} / 24:00:00`;
+      
+      // 本周进度（周一为第一天）
+      const weekDay = now.getDay();
+      const adjustedWeekDay = weekDay === 0 ? 6 : weekDay - 1;
+      const weekProgress = (adjustedWeekDay / 7) * 100;
+      document.getElementById('week-progress').style.width = `${weekProgress}%`;
+      document.getElementById('week-text').textContent = `📅本周已经过去了 ${adjustedWeekDay + 1} / 7 天`;
+      
+      // 本月进度
+      const monthDays = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+      const monthDay = now.getDate();
+      const monthProgress = (monthDay / monthDays) * 100;
+      document.getElementById('month-progress').style.width = `${monthProgress}%`;
+      document.getElementById('month-text').textContent = `🌙本月已经过去了 ${monthDay} / ${monthDays} 天`;
+      
+      // 今年进度
+      const yearStart = new Date(now.getFullYear(), 0, 1);
+      const yearEnd = new Date(now.getFullYear(), 11, 31);
+      const yearTotal = Math.ceil((yearEnd - yearStart) / (1000 * 60 * 60 * 24));
+      const yearDay = Math.ceil((now - yearStart) / (1000 * 60 * 60 * 24));
+      const yearProgress = (yearDay / yearTotal) * 100;
+      document.getElementById('year-progress').style.width = `${yearProgress}%`;
+      document.getElementById('year-text').textContent = `🌟今年已经过去了 ${yearDay} / ${yearTotal} 天`;
+    }
+    
+    // 初始更新 + 每秒刷新
+    updateTimeProgress();
+    setInterval(updateTimeProgress, 1000);
+
+    // ---------------------- 随机名言 + 打字机效果核心代码 ----------------------
+    // 名言库（保留参考中的120句，格式统一为“内容 —— 作者”）
+    const quotes = [
+      { text: "日拱一卒，功不唐捐", author: "胡适" },
+      { text: "慢慢来，比较快", author: "张文亮" },
+      { text: "专注当下，便是永恒", author: "林清玄" },
+      { text: "行动，是治愈焦虑的良药", author: "稻盛和夫" },
+      { text: "简单的事，重复做就是专家", author: "稻盛和夫" },
+      { text: "今天的付出，明天的礼物", author: "李嘉诚" },
+      { text: "心有定见，方能远行", author: "梁漱溟" },
+      { text: "不抱怨，只解决问题", author: "任正非" },
+      { text: "每一步，都算数", author: "胡适" },
+      { text: "保持热爱，奔赴山海", author: "未知" },
+      { text: "自律者，方得自由", author: "罗翔" },
+      { text: "少想多做，事必成", author: "曾国藩" },
+      { text: "微笑，是最好的名片", author: "卡耐基" },
+      { text: "读书，是最低成本的旅行", author: "杨绛" },
+      { text: "接纳遗憾，才能成长", author: "周国平" },
+      { text: "细节，决定成败", author: "汪中求" },
+      { text: "耐心，是最高级的智慧", author: "尼采" },
+      { text: "种一棵树，最好是现在", author: "佚名" },
+      { text: "与其焦虑，不如行动", author: "樊登" },
+      { text: "真诚，是唯一的必杀技", author: "何炅" },
+      { text: "平凡的日子，也有光芒", author: "毕淑敏" },
+      { text: "坚持，才是真正的天赋", author: "韩寒" },
+      { text: "心态对了，一切就对了", author: "张德芬" },
+      { text: "越努力，越幸运", author: "李嘉诚" },
+      { text: "学会放下，才能轻装前行", author: "星云大师" },
+      { text: "珍惜时光，不负韶华", author: "李大钊" },
+      { text: "做自己，最自在", author: "三毛" },
+      { text: "善良，是永不褪色的美", author: "罗素" },
+      { text: "思考，比努力更重要", author: "马云" },
+      { text: "不忘初心，方得始终", author: "《华严经》" },
+      { text: "积小胜，成大胜", author: "毛泽东" },
+      { text: "乐观，是生活的解药", author: "蒙田" },
+      { text: "勇敢，是害怕时仍前行", author: "罗斯福" },
+      { text: "专注，才能做到极致", author: "乔布斯" },
+      { text: "感恩，让生活更温暖", author: "稻盛和夫" },
+      { text: "努力，是为了选择权", author: "龙应台" },
+      { text: "简单生活，更幸福", author: "梭罗" },
+      { text: "改变自己，就能改变世界", author: "甘地" },
+      { text: "脚踏实地，仰望星空", author: "胡适" },
+      { text: "认真，是最好的态度", author: "季羡林" },
+      { text: "时间，会证明一切", author: "鲁迅" },
+      { text: "不浮躁，才能沉下心", author: "钱钟书" },
+      { text: "学习，是终身的事", author: "孔子" },
+      { text: "坚持住，就会看见光", author: "未知" },
+      { text: "格局大了，烦恼就小了", author: "曾仕强" },
+      { text: "用心做事，事必成", author: "曾国藩" },
+      { text: "微笑面对，一切都会好", author: "毕淑敏" },
+      { text: "每一次跌倒，都是成长", author: "尼采" },
+      { text: "珍惜当下，不负遇见", author: "林清玄" },
+      { text: "努力的人，运气不会差", author: "李嘉诚" },
+      { text: "心态好，一切都好", author: "星云大师" },
+      { text: "专注目标，忽略干扰", author: "巴菲特" },
+      { text: "读书，能遇见更好的自己", author: "杨绛" },
+      { text: "行动起来，就赢了一半", author: "马云" },
+      { text: "自律，让生活更有序", author: "罗翔" },
+      { text: "简单的坚持，最难得", author: "稻盛和夫" },
+      { text: "勇敢做自己，别将就", author: "三毛" },
+      { text: "耐心等待，好事会来", author: "蒙田" },
+      { text: "付出爱，才能收获爱", author: "卡耐基" },
+      { text: "不放弃，就有希望", author: "林肯" },
+      { text: "细节里，藏着用心", author: "汪中求" },
+      { text: "保持好奇，不断探索", author: "爱因斯坦" },
+      { text: "感恩所有，不负韶华", author: "李大钊" },
+      { text: "努力，是对自己的负责", author: "龙应台" },
+      { text: "心态平和，万事顺遂", author: "张德芬" },
+      { text: "认真生活，就能遇见美好", author: "毕淑敏" },
+      { text: "坚持下去，自有答案", author: "胡适" },
+      { text: "格局决定结局，态度决定高度", author: "曾仕强" },
+      { text: "做喜欢的事，不辜负自己", author: "三毛" },
+      { text: "用心感受，生活有温度", author: "林清玄" },
+      { text: "努力的意义，在于未来可期", author: "李嘉诚" },
+      { text: "自律的苦，会变成自由的甜", author: "罗翔" },
+      { text: "简单生活，减少内耗", author: "梭罗" },
+      { text: "行动是理想最高贵的表达", author: "歌德" },
+      { text: "每一次努力，都不会白费", author: "稻盛和夫" },
+      { text: "保持乐观，困难会让路", author: "蒙田" },
+      { text: "专注当下，未来可期", author: "林清玄" },
+      { text: "读书，是灵魂的旅行", author: "杨绛" },
+      { text: "勇敢迈出第一步，就赢了", author: "马云" },
+      { text: "耐心，会带来好结果", author: "曾国藩" },
+      { text: "不抱怨，抱怨解决不了问题", author: "任正非" },
+      { text: "珍惜时间，就是珍惜生命", author: "鲁迅" },
+      { text: "做自己的太阳，无需借光", author: "未知" },
+      { text: "努力的人，自带光芒", author: "李嘉诚" },
+      { text: "心态对了，路就顺了", author: "张德芬" },
+      { text: "简单的事，做到极致就是成功", author: "稻盛和夫" },
+      { text: "坚持，是成功的必经之路", author: "尼采" },
+      { text: "感恩生活中的每一份遇见", author: "星云大师" },
+      { text: "专注目标，方能成功", author: "巴菲特" },
+      { text: "学习，让自己不断进步", author: "孔子" },
+      { text: "微笑，能化解很多烦恼", author: "卡耐基" },
+      { text: "脚踏实地，才能走得远", author: "胡适" },
+      { text: "不浮躁，才能做好事", author: "钱钟书" },
+      { text: "勇敢面对，就会有办法", author: "罗斯福" },
+      { text: "每一次成长，都值得庆祝", author: "毕淑敏" },
+      { text: "努力，是为了不辜负自己", author: "龙应台" },
+      { text: "保持热爱，一切都值得", author: "未知" },
+      { text: "自律，是最好的修行", author: "罗翔" },
+      { text: "简单生活，更能感受幸福", author: "梭罗" },
+      { text: "行动起来，别等明天", author: "马云" },
+      { text: "耐心等待，美好会如期而至", author: "蒙田" },
+      { text: "专注当下，就是最好的状态", author: "林清玄" },
+      { text: "努力，让未来有更多可能", author: "李嘉诚" },
+      { text: "不放弃，就会有希望", author: "林肯" },
+      { text: "感恩，让心灵更富足", author: "稻盛和夫" },
+      { text: "做喜欢的事，再累也值得", author: "三毛" },
+      { text: "认真做事，就是对自己负责", author: "季羡林" },
+      { text: "保持好奇，生活更有趣", author: "爱因斯坦" },
+      { text: "心态平和，万事皆顺", author: "星云大师" },
+      { text: "坚持下去，就能看到希望", author: "胡适" }
+    ];
+
+    const quoteDisplay = document.getElementById('quote-display');
+    let autoSwitchTimer, currentActionInterval;
+    const displayedQuotes = []; // 记录已展示名言索引（20句内不重复）
+    const noRepeatLimit = 20; // 不重复限制数量
+
+    // 1. 创建打字机光标
+    function createCursor() {
+      const cursor = document.createElement('span');
+      cursor.className = 'typing-cursor';
+      cursor.textContent = '|';
+      return cursor;
+    }
+
+    // 2. 清除当前打字/消除动作
+    function clearCurrentAction() {
+      clearInterval(currentActionInterval);
+      currentActionInterval = null;
+      // 移除现有光标
+      const existingCursor = quoteDisplay.querySelector('.typing-cursor');
+      if (existingCursor) existingCursor.remove();
+    }
+
+    // 3. 获取20句内不重复的随机名言
+    function getNonRepeatQuote() {
+      // 筛选未展示过的名言索引
+      let availableIndices = quotes.map((_, idx) => !displayedQuotes.includes(idx) ? idx : null).filter(idx => idx !== null);
+      
+      // 若所有名言都展示过（极端情况），清空记录重新开始
+      if (availableIndices.length === 0) {
+        displayedQuotes.length = 0;
+        availableIndices = quotes.map((_, idx) => idx);
+      }
+
+      // 随机选择名言
+      const randomIdx = availableIndices[Math.floor(Math.random() * availableIndices.length)];
+      displayedQuotes.push(randomIdx);
+      // 保持队列长度不超过20
+      if (displayedQuotes.length > noRepeatLimit) displayedQuotes.shift();
+
+      return quotes[randomIdx];
+    }
+
+    // 4. 打字机效果（逐字显示完整名言：“内容 —— 作者”）
+    function typeWriter(fullText, callback) {
+      clearCurrentAction();
+      quoteDisplay.textContent = '';
+      const cursor = createCursor();
+      quoteDisplay.appendChild(cursor);
+
+      let charIndex = 0;
+      currentActionInterval = setInterval(() => {
+        if (charIndex < fullText.length) {
+          quoteDisplay.textContent = fullText.substring(0, charIndex + 1);
+          quoteDisplay.appendChild(cursor);
+          charIndex++;
+        } else {
+          clearCurrentAction();
+          if (callback) setTimeout(callback, 100);
+        }
+      }, 60); // 打字速度：60ms/字（适中）
+    }
+
+    // 5. 逐字消除效果
+    function eraseText(callback) {
+      clearCurrentAction();
+      const fullText = quoteDisplay.textContent;
+      const cursor = createCursor();
+      quoteDisplay.appendChild(cursor);
+
+      let charIndex = fullText.length;
+      currentActionInterval = setInterval(() => {
+        if (charIndex > 0) {
+          quoteDisplay.textContent = fullText.substring(0, charIndex - 1);
+          quoteDisplay.appendChild(cursor);
+          charIndex--;
+        } else {
+          clearCurrentAction();
+          if (callback) callback();
+        }
+      }, 15); // 消除速度：15ms/字（较快，避免等待过久）
+    }
+
+    // 6. 核心流程：打字→展示5秒→消除→加载新名言
+    function showRandomQuote() {
+      clearTimeout(autoSwitchTimer);
+      const randomQuote = getNonRepeatQuote();
+      // 拼接完整格式：“内容 —— 作者”（开引号+内容+作者+收引号）
+      const fullQuoteText = `“ ${randomQuote.text} —— ${randomQuote.author} ”`;
+
+      // 打字显示→展示5秒→消除→重新加载
+      typeWriter(fullQuoteText, () => {
+        autoSwitchTimer = setTimeout(() => {
+          eraseText(() => {
+            setTimeout(showRandomQuote, 300); // 消除后间隔300ms加载新名言
+          });
+        }, 8000); // 名言展示时间：8秒
+      });
+    }
+
+    // 初始加载名言
+    document.addEventListener('DOMContentLoaded', showRandomQuote);
+  </script>
+</body>
+</html>
