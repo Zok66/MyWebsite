@@ -88,7 +88,7 @@
       width: 110px;
       height: 110px;
       border-radius: 50%;
-      background: url('https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+      background: url('images/头像.jpg') center/cover no-repeat;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), var(--bubble-inset);
       border: 6px solid #ffffff;
       transition: transform 0.3s ease;
@@ -462,7 +462,7 @@
       <h1>Hi, I'm <span class="dynamic-gradient">|@佐罗斯|</span></h1>
       <div class="tag-group">
         <span class="tag"><span><b>♂</b></span></span>
-        <span class="tag"><span><b>19</b></span></span>
+        <span class="tag"><span><b id="age">--</b></span></span>
         <span class="tag"><span><b>广东省</b></span></span>
         <span class="tag"><span><b>金牛座</b></span></span>
         <span class="tag"><span><b>学生</b></span></span>
@@ -615,6 +615,17 @@
     // 初始更新 + 每秒刷新
     updateTimeProgress();
     setInterval(updateTimeProgress, 1000);
+
+    // 自动计算年龄（出生：2006-05-01，公历基准，生日过了才加一岁）
+    (function updateAge() {
+      const birth = new Date(2006, 4, 1); // 月份从 0 开始，5 月 = 4
+      const now = new Date();
+      let age = now.getFullYear() - birth.getFullYear();
+      const m = now.getMonth() - birth.getMonth();
+      if (m < 0 || (m === 0 && now.getDate() < birth.getDate())) age--;
+      const el = document.getElementById('age');
+      if (el) el.textContent = age;
+    })();
 
     // ---------------------- 随机名言 + 打字机效果核心代码 ----------------------
     // 名言库（保留参考中的120句，格式统一为“内容 —— 作者”）
